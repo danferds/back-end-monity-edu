@@ -1,6 +1,6 @@
 # language: pt
 
-Funcionalidade: Cadastro de Monitor na Plataforma
+Funcionalidade: Cadastro de Alunos e Monitores
 # Cenários para cadastro de monitores
   Como um MONITOR,
   Desejo me cadastrar na plataforma selecionando a opção "Monitor" e informando meu nome, e-mail e senha,
