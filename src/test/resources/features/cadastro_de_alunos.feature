@@ -2,8 +2,8 @@
 
 Funcionalidade: Cadastro de Alunos e Monitores
 # Cenários para cadastro de alunos na plataforma
-  Como um ALUNO,
-  Desejo me cadastrar na plataforma
+  Como ALUNO, 
+  Desejo me cadastrar na plataforma selecionando a opção "Aluno" e informando meu nome, e-mail, senha e série escolar,
   Para que eu possa acessar os recursos disponíveis e participar das monitorias.
 
   Contexto: Acesso à página de cadastro
