@@ -7,6 +7,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,7 +41,6 @@ public class GlobalExceptionHandler {
         return ResponseFactory.error(HttpStatus.INTERNAL_SERVER_ERROR, "Ocorreu um erro inesperado no servidor.");
     }
 
-    // NOVO MÉTODO ADICIONADO AQUI
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ApiResponse<Object>> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
         String genericMessage = "O corpo da requisição contém um valor em formato inválido.";
@@ -52,4 +52,10 @@ public class GlobalExceptionHandler {
         }
         return ResponseFactory.error(HttpStatus.BAD_REQUEST, genericMessage);
     }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ApiResponse<Object>> handleBadCredentials(BadCredentialsException ex) {
+        return ResponseFactory.error(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos.");
+    }
+
 }
