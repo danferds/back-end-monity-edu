@@ -67,6 +67,13 @@ public class AlunoService {
         return alunoMapper.toAlunoResponseDTO(alunoAtualizado);
     }
 
+    @Transactional
+    public void excluirAluno(UUID id) {
+        log.warn("Iniciando processo de exclusão para o aluno de ID: {}", id);
+        alunoRepository.deleteById(id);
+        log.info("Aluno de ID: {} excluído com sucesso.", id);
+    }
+
     private void processarAtualizacaoSenha(AlunoUpdateDTO dto, Aluno aluno) {
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
             log.info("Atualizando a senha do aluno com ID: {}", aluno.getId());

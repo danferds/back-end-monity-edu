@@ -10,6 +10,7 @@ import com.pi2.monity_edu.service.AlunoService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,12 @@ public class AlunoController {
 
         AlunoResponseDTO alunoAtualizado = alunoService.atualizarAluno(id, alunoUpdateDTO);
         return ResponseFactory.success(alunoAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("@authService.checarDonoDoPerfil(authentication.principal, #id)")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluirAluno(@PathVariable UUID id) {
+        alunoService.excluirAluno(id);
     }
 }
