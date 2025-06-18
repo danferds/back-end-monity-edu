@@ -1,23 +1,22 @@
 package com.pi2.monity_edu.validation;
 
-import com.pi2.monity_edu.dto.AlunoUpdateDTO;
 import com.pi2.monity_edu.exception.EmailJaCadastradoException;
-import com.pi2.monity_edu.model.Aluno;
 import com.pi2.monity_edu.repository.AlunoRepository;
+import com.pi2.monity_edu.repository.MonitorRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
-public class AlunoValidation {
+public class CadastroValidation {
 
     private final AlunoRepository alunoRepository;
+    private final MonitorRepository monitorRepository;
 
     public void verificarSeEmailExiste(String email) {
-        if (alunoRepository.findByEmail(email).isPresent()) {
-            throw new EmailJaCadastradoException("O e-mail informado já está em uso.");
+        if (alunoRepository.findByEmail(email).isPresent() || monitorRepository.findByEmail(email).isPresent()) {
+            throw new EmailJaCadastradoException("Este e-mail já está cadastrado na plataforma.");
         }
     }
 }

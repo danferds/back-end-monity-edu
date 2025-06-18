@@ -9,7 +9,7 @@ import com.pi2.monity_edu.mapper.AlunoMapper;
 import com.pi2.monity_edu.model.Aluno;
 import com.pi2.monity_edu.model.Usuario;
 import com.pi2.monity_edu.repository.AlunoRepository;
-import com.pi2.monity_edu.validation.AlunoValidation;
+import com.pi2.monity_edu.validation.CadastroValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +26,7 @@ public class AlunoService {
     private final AlunoRepository alunoRepository;
     private final PasswordEncoder passwordEncoder;
     private final AlunoMapper alunoMapper;
-    private final AlunoValidation cadastroValidation;
+    private final CadastroValidation cadastroValidation;
     private final UsuarioFactory usuarioFactory;
     private final AlunoFinder alunoFinder;
 
@@ -38,7 +38,6 @@ public class AlunoService {
 
         Usuario usuario = usuarioFactory.criarUsuario("ALUNO");
         Aluno novoAluno = (Aluno) usuario;
-
         alunoMapper.popularAlunoDeDTO(dto, novoAluno);
 
         // Codifica a senha.
