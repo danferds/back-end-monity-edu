@@ -1,6 +1,6 @@
 package com.pi2.monity_edu.security;
 
-import com.pi2.monity_edu.model.Aluno;
+import com.pi2.monity_edu.model.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,21 +14,22 @@ import java.util.List;
 public class UserDetailsImpl implements UserDetails {
 
     @Getter
-    private final Aluno aluno;
+    private final Usuario usuario;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ALUNO"));
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
+
 
     @Override
     public String getPassword() {
-        return aluno.getSenha();
+        return usuario.getSenha();
     }
 
     @Override
     public String getUsername() {
-        return aluno.getEmail();
+        return usuario.getEmail();
     }
 
     @Override

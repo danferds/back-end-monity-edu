@@ -1,6 +1,6 @@
 package com.pi2.monity_edu.security;
 
-import com.pi2.monity_edu.model.Aluno;
+import com.pi2.monity_edu.model.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,13 +24,13 @@ public class TokenService {
 
     public String generateToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
-        Aluno aluno = userPrincipal.getAluno();
+        Usuario user = userPrincipal.getUsuario();
 
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
-                .setSubject(aluno.getId().toString())
+                .setSubject(user.getId().toString())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

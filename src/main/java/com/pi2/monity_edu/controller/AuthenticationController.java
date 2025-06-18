@@ -4,6 +4,7 @@ import com.pi2.monity_edu.dto.LoginRequestDTO;
 import com.pi2.monity_edu.dto.LoginResponseDTO;
 import com.pi2.monity_edu.factory.ResponseFactory;
 import com.pi2.monity_edu.model.Aluno;
+import com.pi2.monity_edu.model.Usuario;
 import com.pi2.monity_edu.response.ApiResponse;
 import com.pi2.monity_edu.security.TokenService;
 import com.pi2.monity_edu.security.UserDetailsImpl;
@@ -35,15 +36,17 @@ public class AuthenticationController {
 
         Authentication auth = authenticationManager.authenticate(usernamePassword);
         String token = tokenService.generateToken(auth);
+
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
-        Aluno alunoAutenticado = userDetails.getAluno();
+        Usuario usuarioAutenticado = userDetails.getUsuario();
+        String userType = (usuarioAutenticado instanceof Aluno) ? "ALUNO" : "MONITOR";
 
         LoginResponseDTO responsePayload = new LoginResponseDTO(
                 token,
-                alunoAutenticado.getId(),
-                alunoAutenticado.getNome(),
-                alunoAutenticado.getEmail(),
-                alunoAutenticado.getSerieEscolar()
+                usuarioAutenticado.getId(),
+                usuarioAutenticado.getNome(),
+                usuarioAutenticado.getEmail(),
+                userType
         );
 
         return ResponseFactory.success(responsePayload);
