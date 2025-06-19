@@ -27,7 +27,7 @@ public class TokenService {
         Usuario user = userPrincipal.getUsuario();
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiration);
+        Date expiryDate = new Date(now.getTime() + expiration * 1000);
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
@@ -59,5 +59,16 @@ public class TokenService {
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(this.secret);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public String getExpirationDate(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+                
+        Date expirationDate = claims.getExpiration();
+        return expirationDate.toInstant().toString();
     }
 }
