@@ -27,7 +27,7 @@ public class TokenService {
         Usuario user = userPrincipal.getUsuario();
 
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiration * 1000);
+        Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
