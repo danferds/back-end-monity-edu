@@ -13,9 +13,10 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                    .allowedOrigins("*") // Habilita tudo, para habilitar um especifico - ex: //"http://localhost:3000"
+                    .allowedOrigins("http://localhost:5173/")
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-                    .allowedHeaders("*");
+                    .allowedHeaders("Content-Type", "Authorization")
+                    .exposedHeaders("Authorization");
             }
         };
     }
