@@ -60,4 +60,15 @@ public class TokenService {
         byte[] keyBytes = Decoders.BASE64.decode(this.secret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+    public String getExpirationDate(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+                
+        Date expirationDate = claims.getExpiration();
+        return expirationDate.toInstant().toString();
+    }
 }

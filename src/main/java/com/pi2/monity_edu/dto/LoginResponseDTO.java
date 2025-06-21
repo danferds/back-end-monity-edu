@@ -16,6 +16,7 @@ public class LoginResponseDTO {
     private String nome;
     private String email;
     private String userType; // "ALUNO" ou "MONITOR"
+    private String expirationTime; // data de expiração do token
 
     public LoginResponseDTO(String token) {
         this.token = token;
