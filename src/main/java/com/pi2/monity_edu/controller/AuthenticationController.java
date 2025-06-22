@@ -46,7 +46,8 @@ public class AuthenticationController {
                 usuarioAutenticado.getId(),
                 usuarioAutenticado.getNome(),
                 usuarioAutenticado.getEmail(),
-                userType
+                userType,
+                tokenService.getExpirationDate(token)
         );
 
         return ResponseFactory.success(responsePayload);
