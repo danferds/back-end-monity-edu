@@ -2,17 +2,23 @@ package com.pi2.monity_edu.service;
 
 import com.pi2.monity_edu.dto.MonitorCadastroDTO;
 import com.pi2.monity_edu.dto.MonitorResponseDTO;
+import com.pi2.monity_edu.dto.MonitorUpdateDTO;
 import com.pi2.monity_edu.factory.UsuarioFactory;
+import com.pi2.monity_edu.finder.MonitorFinder;
 import com.pi2.monity_edu.mapper.MonitorMapper;
 import com.pi2.monity_edu.model.Monitor;
 import com.pi2.monity_edu.model.Usuario;
 import com.pi2.monity_edu.repository.MonitorRepository;
 import com.pi2.monity_edu.validation.CadastroValidation;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +30,7 @@ public class MonitorService {
     private final MonitorMapper monitorMapper;
     private final CadastroValidation cadastroValidation;
     private final UsuarioFactory usuarioFactory;
+    private final MonitorFinder monitorFinder;
 
     @Transactional
     public MonitorResponseDTO cadastrarNovoMonitor(MonitorCadastroDTO dto) {
@@ -42,5 +49,29 @@ public class MonitorService {
 
         log.info("Monitor cadastrado com sucesso. ID: {}", monitorSalvo.getId());
         return monitorMapper.toMonitorResponseDTO(monitorSalvo);
+    }
+
+    @Transactional
+    public MonitorResponseDTO atualizarMonitor(UUID id, MonitorUpdateDTO dto) {
+        log.info("Iniciando processo de atualização para o monitor de ID: {}", id);
+
+        Monitor monitor = monitorFinder.buscarPorId(id);
+
+        cadastroValidation.validarAtualizacaoEmail(dto.getEmail(), monitor.getEmail(), monitor.getId());
+
+        monitorMapper.updateMonitorFromDto(dto, monitor);
+        processarAtualizacaoSenha(dto, monitor);
+
+        Monitor monitorAtualizado = monitorRepository.save(monitor);
+        log.info("Monitor de ID: {} atualizado com sucesso.", monitorAtualizado.getId());
+
+        return monitorMapper.toMonitorResponseDTO(monitorAtualizado);
+    }
+
+    private void processarAtualizacaoSenha(MonitorUpdateDTO dto, Monitor monitor) {
+        if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
+            log.info("Atualizando a senha do monitor de ID: {}", monitor.getId());
+            monitor.setSenha(passwordEncoder.encode(dto.getSenha()));
+        }
     }
 }

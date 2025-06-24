@@ -2,10 +2,10 @@ package com.pi2.monity_edu.mapper;
 
 import com.pi2.monity_edu.dto.MonitorCadastroDTO;
 import com.pi2.monity_edu.dto.MonitorResponseDTO;
+import com.pi2.monity_edu.dto.MonitorUpdateDTO;
 import com.pi2.monity_edu.model.Monitor;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
+
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring")
 public interface MonitorMapper {
@@ -21,4 +21,10 @@ public interface MonitorMapper {
     void popularMonitorDeDTO(MonitorCadastroDTO dto, @MappingTarget Monitor monitor);
 
     MonitorResponseDTO toMonitorResponseDTO(Monitor monitor);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "senha", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    void updateMonitorFromDto(MonitorUpdateDTO dto, @MappingTarget Monitor monitor);
 }

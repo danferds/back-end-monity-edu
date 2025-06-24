@@ -1,12 +1,15 @@
 package com.pi2.monity_edu.exception;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.pi2.monity_edu.factory.ResponseFactory;
 import com.pi2.monity_edu.response.ApiResponse;
+
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -58,4 +61,8 @@ public class GlobalExceptionHandler {
         return ResponseFactory.error(HttpStatus.UNAUTHORIZED, "E-mail ou senha inválidos.");
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {
+        return ResponseFactory.error(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
 }
