@@ -12,6 +12,7 @@ import com.pi2.monity_edu.service.MonitorService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -42,5 +43,16 @@ public class MonitorController {
 
         MonitorResponseDTO monitorAtualizado = monitorService.atualizarMonitor(id, monitorUpdateDTO);
         return ResponseFactory.success(monitorAtualizado);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluirMonitor(
+            @PathVariable UUID id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        authorizationService.checarDonoDoPerfil(userDetails, id);
+
+        monitorService.excluirMonitor(id);
     }
 }

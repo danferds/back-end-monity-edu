@@ -68,6 +68,16 @@ public class MonitorService {
         return monitorMapper.toMonitorResponseDTO(monitorAtualizado);
     }
 
+    @Transactional
+    public void excluirMonitor(UUID id) {
+        log.warn("Iniciando processo de exclusão para o monitor de ID: {}", id);
+
+        monitorFinder.buscarPorId(id);
+        monitorRepository.deleteById(id);
+
+        log.info("Monitor de ID: {} excluído com sucesso.", id);
+    }
+
     private void processarAtualizacaoSenha(MonitorUpdateDTO dto, Monitor monitor) {
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
             log.info("Atualizando a senha do monitor de ID: {}", monitor.getId());
