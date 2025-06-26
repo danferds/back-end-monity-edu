@@ -55,7 +55,9 @@ public class AlunoService {
 
         Aluno aluno = alunoFinder.buscarPorId(id);
 
-        cadastroValidation.verificarSeEmailExiste(dto.getEmail());
+        //cadastroValidation.verificarSeEmailExiste(dto.getEmail());
+
+        cadastroValidation.validarAtualizacaoEmail(dto.getEmail(), aluno.getEmail(), aluno.getId());
 
         alunoMapper.updateAlunoFromDto(dto, aluno);
         processarAtualizacaoSenha(dto, aluno);
