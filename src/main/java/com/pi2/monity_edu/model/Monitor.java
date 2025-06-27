@@ -3,6 +3,8 @@ package com.pi2.monity_edu.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -12,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"senha"})
+@ToString(exclude = { "senha" })
 public class Monitor implements Usuario {
 
     @Id
@@ -32,4 +34,7 @@ public class Monitor implements Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusMonitor status = StatusMonitor.PENDENTE;
+
+    @OneToMany(mappedBy = "monitor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Credenciamento> credenciamentos = new ArrayList<>();
 }
