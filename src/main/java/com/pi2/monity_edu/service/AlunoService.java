@@ -71,7 +71,10 @@ public class AlunoService {
     @Transactional
     public void excluirAluno(UUID id) {
         log.warn("Iniciando processo de exclusão para o aluno de ID: {}", id);
+
+        alunoFinder.buscarPorId(id);
         alunoRepository.deleteById(id);
+
         log.info("Aluno de ID: {} excluído com sucesso.", id);
     }
 
