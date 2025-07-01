@@ -34,6 +34,16 @@ public class GlobalExceptionHandler {
         return ResponseFactory.error(HttpStatus.CONFLICT, ex.getMessage());
     }
 
+    @ExceptionHandler(EmailInexistenteException.class)
+    public ResponseEntity<ApiResponse<Object>> handleEmailInexistente(EmailInexistenteException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(DominioInstitucionalInvalidoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleDominioInvalido(DominioInstitucionalInvalidoException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleEntityNotFound(EntityNotFoundException ex) {
         return ResponseFactory.error(HttpStatus.NOT_FOUND, "Recurso não encontrado.");
@@ -49,7 +59,7 @@ public class GlobalExceptionHandler {
         String genericMessage = "O corpo da requisição contém um valor em formato inválido.";
 
         if (ex.getCause() instanceof InvalidFormatException ifx) {
-            String fieldName = ifx.getPath().get(ifx.getPath().size()-1).getFieldName();
+            String fieldName = ifx.getPath().get(ifx.getPath().size() - 1).getFieldName();
             String detailedMessage = String.format("O valor '%s' não é válido para o campo '%s'.", ifx.getValue(), fieldName);
             return ResponseFactory.error(HttpStatus.BAD_REQUEST, detailedMessage);
         }

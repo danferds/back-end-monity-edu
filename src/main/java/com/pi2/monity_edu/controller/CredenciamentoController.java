@@ -22,7 +22,7 @@ public class CredenciamentoController {
     @PostMapping("/monitor")
     public ResponseEntity<ApiResponse<CredenciamentoResponseDTO>> credenciamentoMonitor(
             @Valid @RequestBody CredenciamentoCadastroDTO dto) {
-        CredenciamentoResponseDTO credenciamento = credenciamentoService.cadastrarVerificacao(dto);
+        CredenciamentoResponseDTO credenciamento = credenciamentoService.processarCredenciamento(dto);
 
         return ResponseFactory.created(credenciamento);
     }
