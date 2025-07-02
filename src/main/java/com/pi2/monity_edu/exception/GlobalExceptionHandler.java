@@ -14,6 +14,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,5 +75,30 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Object>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseFactory.error(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(MonitorNaoCredenciadoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMonitorNaoCredenciado(MonitorNaoCredenciadoException ex) {
+        return ResponseFactory.error(HttpStatus.FORBIDDEN, ex.getMessage());
+    }
+
+    @ExceptionHandler(HorarioInvalidoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleHorarioInvalido(HorarioInvalidoException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(TipoArquivoNaoSuportadoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleTipoArquivoNaoSuportado(TipoArquivoNaoSuportadoException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiResponse<Object>> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, "Argumento inválido.");
+    }
+
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
+        return ResponseFactory.error(HttpStatus.PAYLOAD_TOO_LARGE, "O arquivo excede o tamanho máximo permitido de 10MB.");
     }
 }
