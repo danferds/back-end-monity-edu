@@ -22,4 +22,6 @@ public interface Usuario {
     String getSenha();
 
     void setSenha(String senha);
+
+    StatusMonitor getStatus();
 }

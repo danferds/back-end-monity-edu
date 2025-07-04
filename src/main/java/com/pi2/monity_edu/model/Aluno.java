@@ -11,7 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"senha"})
+@ToString(exclude = { "senha" })
 public class Aluno implements Usuario {
 
     @Id
@@ -31,4 +31,8 @@ public class Aluno implements Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SerieEscolar serieEscolar;
+
+    public StatusMonitor getStatus() {
+        return null;
+    }
 }
