@@ -21,6 +21,7 @@ public interface MonitoriaMapper {
     @Mapping(target = "monitor", ignore = true)
     @Mapping(target = "alunosInscritos", ignore = true)
     @Mapping(target = "materiais", ignore = true)
+    @Mapping(target = "status", ignore = true)
     Monitoria toMonitoria(MonitoriaCadastroDTO dto);
 
     @Mapping(source = "monitor.id", target = "monitorId")

@@ -1,6 +1,7 @@
 package com.pi2.monity_edu.dto;
 
 
+import com.pi2.monity_edu.model.StatusMonitoria;
 import lombok.Value;
 
 import java.time.LocalDate;
@@ -21,5 +22,6 @@ public class MonitoriaResponseDTO {
     String descricao;
     UUID monitorId;
     String nomeMonitor;
+    StatusMonitoria status;
     List<MaterialComplementarResponseDTO> materiais;
 }
