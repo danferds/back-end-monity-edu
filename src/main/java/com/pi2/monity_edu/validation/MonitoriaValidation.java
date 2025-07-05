@@ -75,10 +75,5 @@ public class MonitoriaValidation {
             log.warn("A monitoria já está cancelada");
             throw new CancelarMonitoriaException("A monitoria já está cancelada");
         }
-
-        if (monitoria.getMonitor().getId() != userDetails.getUsuario().getId()) {
-            log.warn("Usuário não é o dono da monitoria");
-            throw new CancelarMonitoriaException("Usuário não é o dono da monitoria");
-        }
     }
 }
