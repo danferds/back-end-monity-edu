@@ -34,7 +34,7 @@ public class MonitoriaController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<MonitoriaResponseDTO>> getMonitoriaById(@PathVariable String id) {
+    public ResponseEntity<ApiResponse<MonitoriaResponseDTO>> getMonitoriaById(@PathVariable UUID id) {
 
         MonitoriaResponseDTO monitoria = monitoriaService.getMonitoriaById(id);
         return ResponseFactory.success(monitoria);
