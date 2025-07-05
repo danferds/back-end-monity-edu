@@ -49,16 +49,16 @@ public class Monitoria {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String descricao;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private StatusMonitoria status = StatusMonitoria.PENDENTE;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "monitor_id", nullable = false)
     private Monitor monitor;
 
     @ManyToMany
-    @JoinTable(
-            name = "monitoria_alunos",
-            joinColumns = @JoinColumn(name = "monitoria_id"),
-            inverseJoinColumns = @JoinColumn(name = "aluno_id")
-    )
+    @JoinTable(name = "monitoria_alunos", joinColumns = @JoinColumn(name = "monitoria_id"), inverseJoinColumns = @JoinColumn(name = "aluno_id"))
     private List<Aluno> alunosInscritos = new ArrayList<>();
 
     @OneToMany(mappedBy = "monitoria", cascade = CascadeType.ALL, orphanRemoval = true)
