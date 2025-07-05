@@ -63,10 +63,10 @@ public class MonitoriaService {
     }
 
     @Transactional
-    public MonitoriaResponseDTO getMonitoriaById(String id) {
+    public MonitoriaResponseDTO getMonitoriaById(UUID id) {
         log.info("Buscando monitoria com ID: {}", id);
 
-        Monitoria monitoria = monitoriaRepository.findById(UUID.fromString(id))
+        Monitoria monitoria = monitoriaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Monitoria não encontrada"));
 
         return monitoriaMapper.toMonitoriaResponseDTO(monitoria);

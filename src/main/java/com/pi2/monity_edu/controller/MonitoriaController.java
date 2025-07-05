@@ -10,6 +10,8 @@ import com.pi2.monity_edu.service.MonitoriaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +41,7 @@ public class MonitoriaController {
     }
 
     @PatchMapping("/{id}/cancelar")
-    public ResponseEntity<ApiResponse<String>> cancelarMonitoria(@PathVariable String id,
+    public ResponseEntity<ApiResponse<String>> cancelarMonitoria(@PathVariable UUID id,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         monitoriaService.cancelarMonitoria(id, userDetails);
 
