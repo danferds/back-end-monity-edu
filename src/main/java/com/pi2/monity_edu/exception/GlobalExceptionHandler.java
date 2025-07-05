@@ -25,8 +25,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Object>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
+        ex.getBindingResult().getFieldErrors()
+                .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
         return ResponseFactory.error(HttpStatus.UNPROCESSABLE_ENTITY, "Dados de entrada inválidos.", errors);
     }
 
@@ -61,7 +61,8 @@ public class GlobalExceptionHandler {
 
         if (ex.getCause() instanceof InvalidFormatException ifx) {
             String fieldName = ifx.getPath().get(ifx.getPath().size() - 1).getFieldName();
-            String detailedMessage = String.format("O valor '%s' não é válido para o campo '%s'.", ifx.getValue(), fieldName);
+            String detailedMessage = String.format("O valor '%s' não é válido para o campo '%s'.", ifx.getValue(),
+                    fieldName);
             return ResponseFactory.error(HttpStatus.BAD_REQUEST, detailedMessage);
         }
         return ResponseFactory.error(HttpStatus.BAD_REQUEST, genericMessage);
@@ -99,6 +100,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<ApiResponse<Object>> handleMaxUploadSizeExceeded(MaxUploadSizeExceededException ex) {
-        return ResponseFactory.error(HttpStatus.PAYLOAD_TOO_LARGE, "O arquivo excede o tamanho máximo permitido de 10MB.");
+        return ResponseFactory.error(HttpStatus.PAYLOAD_TOO_LARGE,
+                "O arquivo excede o tamanho máximo permitido de 10MB.");
+    }
+
+    @ExceptionHandler(CancelarMonitoriaException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCancelarMonitoria(CancelarMonitoriaException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 }

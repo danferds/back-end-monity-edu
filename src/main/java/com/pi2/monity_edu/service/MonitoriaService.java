@@ -6,7 +6,9 @@ import com.pi2.monity_edu.finder.MonitorFinder;
 import com.pi2.monity_edu.mapper.MonitoriaMapper;
 import com.pi2.monity_edu.model.Monitor;
 import com.pi2.monity_edu.model.Monitoria;
+import com.pi2.monity_edu.model.StatusMonitoria;
 import com.pi2.monity_edu.repository.MonitoriaRepository;
+import com.pi2.monity_edu.security.UserDetailsImpl;
 import com.pi2.monity_edu.validation.MonitoriaValidation;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class MonitoriaService {
 
         Monitoria novaMonitoria = monitoriaMapper.toMonitoria(dto);
         novaMonitoria.setMonitor(monitor);
+        novaMonitoria.setStatus(StatusMonitoria.PENDENTE);
 
         processarMateriais(dto.getArquivos(), novaMonitoria);
 
@@ -55,8 +58,33 @@ public class MonitoriaService {
             monitoria.setMateriais(
                     arquivos.stream()
                             .map(arquivo -> materialComplementarService.criarMaterial(arquivo, monitoria))
-                            .collect(Collectors.toList())
-            );
+                            .collect(Collectors.toList()));
         }
+    }
+
+    @Transactional
+    public MonitoriaResponseDTO getMonitoriaById(String id) {
+        log.info("Buscando monitoria com ID: {}", id);
+
+        Monitoria monitoria = monitoriaRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new IllegalArgumentException("Monitoria não encontrada"));
+
+        return monitoriaMapper.toMonitoriaResponseDTO(monitoria);
+    }
+
+    @Transactional
+    public Boolean cancelarMonitoria(String id, UserDetailsImpl userDetails) {
+        log.info("Cancelando monitoria com ID: {}", id);
+
+        Monitoria monitoria = monitoriaRepository.findById(UUID.fromString(id))
+                .orElseThrow(() -> new IllegalArgumentException("Monitoria não encontrada"));
+
+        monitoriaValidation.podeCancelar(monitoria, userDetails);
+
+        monitoria.setStatus(StatusMonitoria.CANCELADA);
+        monitoriaRepository.save(monitoria);
+        log.info("Monitoria com ID: {} cancelada com sucesso", id);
+
+        return true;
     }
 }

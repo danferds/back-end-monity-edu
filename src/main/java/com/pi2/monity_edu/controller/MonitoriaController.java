@@ -26,7 +26,23 @@ public class MonitoriaController {
             @Valid @ModelAttribute MonitoriaCadastroDTO dto,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
-        MonitoriaResponseDTO monitoriaCriada = monitoriaService.cadastrarMonitoria(dto, userDetails.getUsuario().getId());
+        MonitoriaResponseDTO monitoriaCriada = monitoriaService.cadastrarMonitoria(dto,
+                userDetails.getUsuario().getId());
         return ResponseFactory.created(monitoriaCriada);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<MonitoriaResponseDTO>> getMonitoriaById(@PathVariable String id) {
+
+        MonitoriaResponseDTO monitoria = monitoriaService.getMonitoriaById(id);
+        return ResponseFactory.success(monitoria);
+    }
+
+    @PatchMapping("/{id}/cancelar")
+    public ResponseEntity<ApiResponse<String>> cancelarMonitoria(@PathVariable String id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        monitoriaService.cancelarMonitoria(id, userDetails);
+
+        return ResponseFactory.success("Monitoria cancelada com sucesso!");
     }
 }
