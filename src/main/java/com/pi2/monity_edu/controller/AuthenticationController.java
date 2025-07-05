@@ -31,8 +31,7 @@ public class AuthenticationController {
     public ResponseEntity<ApiResponse<LoginResponseDTO>> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(
                 loginRequest.getEmail(),
-                loginRequest.getSenha()
-        );
+                loginRequest.getSenha());
 
         Authentication auth = authenticationManager.authenticate(usernamePassword);
         String token = tokenService.generateToken(auth);
@@ -47,8 +46,8 @@ public class AuthenticationController {
                 usuarioAutenticado.getNome(),
                 usuarioAutenticado.getEmail(),
                 userType,
-                tokenService.getExpirationDate(token)
-        );
+                tokenService.getExpirationDate(token),
+                usuarioAutenticado.getStatus());
 
         return ResponseFactory.success(responsePayload);
     }
