@@ -73,10 +73,10 @@ public class MonitoriaService {
     }
 
     @Transactional
-    public Boolean cancelarMonitoria(String id, UserDetailsImpl userDetails) {
+    public Boolean cancelarMonitoria(UUID id, UserDetailsImpl userDetails) {
         log.info("Cancelando monitoria com ID: {}", id);
 
-        Monitoria monitoria = monitoriaRepository.findById(UUID.fromString(id))
+        Monitoria monitoria = monitoriaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Monitoria não encontrada"));
 
         monitoriaValidation.podeCancelar(monitoria, userDetails);
