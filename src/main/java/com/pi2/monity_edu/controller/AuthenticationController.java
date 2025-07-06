@@ -4,12 +4,15 @@ import com.pi2.monity_edu.dto.LoginRequestDTO;
 import com.pi2.monity_edu.dto.LoginResponseDTO;
 import com.pi2.monity_edu.factory.ResponseFactory;
 import com.pi2.monity_edu.model.Aluno;
+import com.pi2.monity_edu.model.Monitor;
 import com.pi2.monity_edu.model.Usuario;
 import com.pi2.monity_edu.response.ApiResponse;
 import com.pi2.monity_edu.security.TokenService;
 import com.pi2.monity_edu.security.UserDetailsImpl;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,7 +41,9 @@ public class AuthenticationController {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) auth.getPrincipal();
         Usuario usuarioAutenticado = userDetails.getUsuario();
+
         String userType = (usuarioAutenticado instanceof Aluno) ? "ALUNO" : "MONITOR";
+        String statusMonitor = (usuarioAutenticado instanceof Monitor monitor) ? monitor.getStatus().name() : null;
 
         LoginResponseDTO responsePayload = new LoginResponseDTO(
                 token,
@@ -47,7 +52,7 @@ public class AuthenticationController {
                 usuarioAutenticado.getEmail(),
                 userType,
                 tokenService.getExpirationDate(token),
-                usuarioAutenticado.getStatus());
+                statusMonitor );
 
         return ResponseFactory.success(responsePayload);
     }

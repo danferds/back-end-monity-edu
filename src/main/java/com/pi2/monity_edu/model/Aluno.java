@@ -31,8 +31,4 @@ public class Aluno implements Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SerieEscolar serieEscolar;
-
-    public StatusMonitor getStatus() {
-        return null;
-    }
 }

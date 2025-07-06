@@ -1,16 +1,16 @@
 package com.pi2.monity_edu.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-import com.pi2.monity_edu.model.StatusMonitor;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoginResponseDTO {
 
     private String token;
@@ -19,7 +19,7 @@ public class LoginResponseDTO {
     private String email;
     private String userType; // "ALUNO" ou "MONITOR"
     private String expirationTime; // data de expiração do token
-    private StatusMonitor status;
+    private String statusMonitor;
 
     public LoginResponseDTO(String token) {
         this.token = token;
