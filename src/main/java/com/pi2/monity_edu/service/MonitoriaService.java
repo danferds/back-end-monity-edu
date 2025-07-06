@@ -1,6 +1,7 @@
 package com.pi2.monity_edu.service;
 
 import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
+import com.pi2.monity_edu.dto.MonitoriaFilterDTO;
 import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
 import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
 import com.pi2.monity_edu.finder.FinderMonitoria;
@@ -10,16 +11,21 @@ import com.pi2.monity_edu.model.Monitor;
 import com.pi2.monity_edu.model.Monitoria;
 import com.pi2.monity_edu.model.StatusMonitoria;
 import com.pi2.monity_edu.repository.MonitoriaRepository;
+import com.pi2.monity_edu.repository.specification.MonitoriaSpecification;
 import com.pi2.monity_edu.security.UserDetailsImpl;
 import com.pi2.monity_edu.validation.MonitoriaValidation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +38,7 @@ public class MonitoriaService {
     private final MonitoriaValidation monitoriaValidation;
     private final FinderMonitoria monitoriaFinder;
     private final MonitoriaMaterialService monitoriaMaterialService;
+    private final MonitoriaSpecification monitoriaSpecification;
 
     @Transactional
     public MonitoriaResponseDTO cadastrarMonitoria(MonitoriaCadastroDTO dto, UUID monitorId) {
@@ -89,5 +96,20 @@ public class MonitoriaService {
         log.info("Monitoria de ID: {} atualizada com sucesso.", monitoriaAtualizada.getId());
 
         return monitoriaMapper.toMonitoriaResponseDTO(monitoriaAtualizada);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MonitoriaResponseDTO> listarMonitorias(MonitoriaFilterDTO filter, UserDetailsImpl userDetails) {
+
+        UUID monitorId = userDetails.getUsuario().getId();
+
+        log.info("Buscando monitorias para o monitor ID: {} com os filtros: {}", monitorId, filter);
+
+        Specification<Monitoria> specificacao = monitoriaSpecification.getMonitorias(filter, monitorId);
+        List<Monitoria> monitorias = monitoriaRepository.findAll(specificacao, Sort.by("data", "horarioInicio"));
+
+        return monitorias.stream()
+                .map(monitoriaMapper::toMonitoriaResponseDTO)
+                .collect(Collectors.toList());
     }
 }
