@@ -3,11 +3,11 @@ package com.pi2.monity_edu.mapper;
 import com.pi2.monity_edu.dto.MaterialComplementarResponseDTO;
 import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
+import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
 import com.pi2.monity_edu.model.MaterialComplementar;
 import com.pi2.monity_edu.model.Monitoria;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.mapstruct.*;
 
 import java.util.stream.Collectors;
 
@@ -32,4 +32,12 @@ public interface MonitoriaMapper {
     @Mapping(source = "id", target = "id")
     @Mapping(source = "nomeArquivo", target = "nomeArquivo")
     MaterialComplementarResponseDTO toMaterialComplementarResponseDTO(MaterialComplementar material);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "monitor", ignore = true)
+    @Mapping(target = "alunosInscritos", ignore = true)
+    @Mapping(target = "materiais", ignore = true)
+    void updateMonitoriaFromDto(MonitoriaUpdateDTO dto, @MappingTarget Monitoria monitoria);
 }

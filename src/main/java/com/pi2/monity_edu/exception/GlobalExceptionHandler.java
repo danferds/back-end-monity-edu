@@ -108,4 +108,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleCancelarMonitoriaException(CancelarMonitoriaException ex) {
         return ResponseFactory.error(HttpStatus.CONFLICT, ex.getMessage());
     }
+
+    @ExceptionHandler(MonitoriaNaoEditavelException.class)
+    public ResponseEntity<ApiResponse<Object>> handleMonitoriaNaoEditavel(MonitoriaNaoEditavelException ex) {
+        return ResponseFactory.error(HttpStatus.CONFLICT, ex.getMessage());
+    }
 }

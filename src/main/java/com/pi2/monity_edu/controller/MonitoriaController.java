@@ -2,19 +2,20 @@ package com.pi2.monity_edu.controller;
 
 import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
+import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
 import com.pi2.monity_edu.factory.ResponseFactory;
 import com.pi2.monity_edu.response.ApiResponse;
 import com.pi2.monity_edu.security.UserDetailsImpl;
 import com.pi2.monity_edu.service.MonitoriaService;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.UUID;
-
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/monitorias")
@@ -46,5 +47,15 @@ public class MonitoriaController {
         monitoriaService.cancelarMonitoria(id, userDetails);
 
         return ResponseFactory.success("Monitoria cancelada com sucesso!");
+    }
+
+    @PatchMapping("/{id}/editar")
+    public ResponseEntity<ApiResponse<MonitoriaResponseDTO>> atualizarMonitoria(
+            @PathVariable UUID id,
+            @Valid @ModelAttribute MonitoriaUpdateDTO dto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        MonitoriaResponseDTO monitoriaAtualizada = monitoriaService.atualizarMonitoria(id, dto, userDetails);
+        return ResponseFactory.success(monitoriaAtualizada);
     }
 }
