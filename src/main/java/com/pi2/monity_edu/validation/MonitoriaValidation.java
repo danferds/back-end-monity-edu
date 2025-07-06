@@ -12,11 +12,13 @@ import com.pi2.monity_edu.model.StatusMonitoria;
 import com.pi2.monity_edu.security.UserDetailsImpl;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -56,6 +58,7 @@ public class MonitoriaValidation {
             if (arquivo == null || arquivo.isEmpty()) {
                 continue;
             }
+
             String contentType = arquivo.getContentType();
             if (contentType == null || !TIPOS_ARQUIVO_SUPORTADOS.contains(contentType)) {
                 log.warn("Tentativa de upload de arquivo com tipo não suportado: {}", contentType);
@@ -66,14 +69,21 @@ public class MonitoriaValidation {
     }
 
     public void podeCancelar(Monitoria monitoria, UserDetailsImpl userDetails) {
-        if (monitoria.getStatus() == StatusMonitoria.REALIZADA) {
-            log.warn("Não é possível cancelar uma monitoria que já foi realizada");
-            throw new CancelarMonitoriaException("Não é possível cancelar uma monitoria que já foi realizada");
+        //Verifica se o usuário logado é o dono da monitoria
+        if (!Objects.equals(monitoria.getMonitor().getId(), userDetails.getUsuario().getId())) {
+            log.warn("Tentativa de cancelamento por usuário não autorizado. User ID: {}, Monitoria ID: {}",
+                    userDetails.getUsuario().getId(), monitoria.getId());
+            throw new AccessDeniedException("Acesso negado. Você não tem permissão para cancelar esta monitoria.");
         }
 
         if (monitoria.getStatus() == StatusMonitoria.CANCELADA) {
-            log.warn("A monitoria já está cancelada");
-            throw new CancelarMonitoriaException("A monitoria já está cancelada");
+            log.warn("Tentativa de cancelar uma monitoria que já está cancelada. Monitoria ID: {}", monitoria.getId());
+            throw new CancelarMonitoriaException("A monitoria já foi cancelada.");
+        }
+
+        if (monitoria.getStatus() == StatusMonitoria.REALIZADA) {
+            log.warn("Tentativa de cancelar uma monitoria que já foi realizada. Monitoria ID: {}", monitoria.getId());
+            throw new CancelarMonitoriaException("Não é possível cancelar uma monitoria que já foi realizada.");
         }
     }
 }

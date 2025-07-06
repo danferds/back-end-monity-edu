@@ -4,7 +4,6 @@ import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
 import com.pi2.monity_edu.factory.ResponseFactory;
 import com.pi2.monity_edu.response.ApiResponse;
-import com.pi2.monity_edu.security.AuthorizationService;
 import com.pi2.monity_edu.security.UserDetailsImpl;
 import com.pi2.monity_edu.service.MonitoriaService;
 
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class MonitoriaController {
 
     private final MonitoriaService monitoriaService;
-    private final AuthorizationService authorizationService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<MonitoriaResponseDTO>> cadastrarMonitoria(
@@ -46,8 +44,6 @@ public class MonitoriaController {
     public ResponseEntity<ApiResponse<String>> cancelarMonitoria(@PathVariable UUID id,
             @AuthenticationPrincipal UserDetailsImpl userDetails) {
         monitoriaService.cancelarMonitoria(id, userDetails);
-
-        authorizationService.checarDonoDoPerfil(userDetails, id);
 
         return ResponseFactory.success("Monitoria cancelada com sucesso!");
     }

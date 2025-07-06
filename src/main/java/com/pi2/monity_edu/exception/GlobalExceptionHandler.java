@@ -105,7 +105,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CancelarMonitoriaException.class)
-    public ResponseEntity<ApiResponse<Object>> handleCancelarMonitoria(CancelarMonitoriaException ex) {
-        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    public ResponseEntity<ApiResponse<Object>> handleCancelarMonitoriaException(CancelarMonitoriaException ex) {
+        return ResponseFactory.error(HttpStatus.CONFLICT, ex.getMessage());
     }
 }

@@ -2,6 +2,7 @@ package com.pi2.monity_edu.service;
 
 import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
+import com.pi2.monity_edu.finder.FinderMonitoria;
 import com.pi2.monity_edu.finder.MonitorFinder;
 import com.pi2.monity_edu.mapper.MonitoriaMapper;
 import com.pi2.monity_edu.model.Monitor;
@@ -32,6 +33,7 @@ public class MonitoriaService {
     private final MonitoriaMapper monitoriaMapper;
     private final MonitoriaValidation monitoriaValidation;
     private final MaterialComplementarService materialComplementarService;
+    private final FinderMonitoria monitoriaFinder;
 
     @Transactional
     public MonitoriaResponseDTO cadastrarMonitoria(MonitoriaCadastroDTO dto, UUID monitorId) {
@@ -53,6 +55,31 @@ public class MonitoriaService {
         return monitoriaMapper.toMonitoriaResponseDTO(monitoriaSalva);
     }
 
+    public MonitoriaResponseDTO getMonitoriaById(UUID monitorId) {
+        log.info("Buscando monitoria com ID: {}", monitorId);
+
+        Monitoria monitoria = monitoriaFinder.buscarPorId(monitorId);
+
+        return monitoriaMapper.toMonitoriaResponseDTO(monitoria);
+    }
+
+    @Transactional
+    public Boolean cancelarMonitoria(UUID monitorId, UserDetailsImpl userDetails) {
+        log.info("Cancelando monitoria com ID: {}", monitorId);
+
+
+        Monitoria monitoria = monitoriaFinder.buscarPorId(monitorId);
+
+        monitoriaValidation.podeCancelar(monitoria, userDetails);
+
+        monitoria.setStatus(StatusMonitoria.CANCELADA);
+        monitoriaRepository.save(monitoria);
+
+        log.info("Monitoria com ID: {} cancelada com sucesso", monitorId);
+
+        return true;
+    }
+
     private void processarMateriais(List<MultipartFile> arquivos, Monitoria monitoria) {
         if (arquivos != null && !arquivos.isEmpty()) {
             monitoria.setMateriais(
@@ -60,31 +87,5 @@ public class MonitoriaService {
                             .map(arquivo -> materialComplementarService.criarMaterial(arquivo, monitoria))
                             .collect(Collectors.toList()));
         }
-    }
-
-    @Transactional
-    public MonitoriaResponseDTO getMonitoriaById(UUID id) {
-        log.info("Buscando monitoria com ID: {}", id);
-
-        Monitoria monitoria = monitoriaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Monitoria não encontrada"));
-
-        return monitoriaMapper.toMonitoriaResponseDTO(monitoria);
-    }
-
-    @Transactional
-    public Boolean cancelarMonitoria(UUID id, UserDetailsImpl userDetails) {
-        log.info("Cancelando monitoria com ID: {}", id);
-
-        Monitoria monitoria = monitoriaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Monitoria não encontrada"));
-
-        monitoriaValidation.podeCancelar(monitoria, userDetails);
-
-        monitoria.setStatus(StatusMonitoria.CANCELADA);
-        monitoriaRepository.save(monitoria);
-        log.info("Monitoria com ID: {} cancelada com sucesso", id);
-
-        return true;
     }
 }
