@@ -1,6 +1,7 @@
 package com.pi2.monity_edu.dto;
 
 import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class MonitoriaCadastroDTO {
     private String titulo;
 
     @NotNull(message = "A data não pode ser vazia.")
-    @Future(message = "A data da monitoria deve ser no futuro.")
+    @FutureOrPresent(message = "A data da monitoria não pode ser no passado.")
     private LocalDate data;
 
     @NotNull(message = "O horário de início não pode ser vazio.")
