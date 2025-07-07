@@ -59,6 +59,7 @@ public class MonitoriaService {
         return monitoriaMapper.toMonitoriaResponseDTO(monitoriaSalva);
     }
 
+    @Transactional
     public MonitoriaResponseDTO getMonitoriaById(UUID monitoriaId) {
         log.info("Buscando monitoria com ID: {}", monitoriaId);
 
@@ -83,7 +84,8 @@ public class MonitoriaService {
     }
 
     @Transactional
-    public MonitoriaResponseDTO atualizarMonitoria(UUID monitoriaId, MonitoriaUpdateDTO dto, UserDetailsImpl userDetails) {
+    public MonitoriaResponseDTO atualizarMonitoria(UUID monitoriaId, MonitoriaUpdateDTO dto,
+            UserDetailsImpl userDetails) {
         log.info("Iniciando processo de atualização para a monitoria de ID: {}", monitoriaId);
 
         Monitoria monitoria = monitoriaFinder.buscarPorId(monitoriaId);
