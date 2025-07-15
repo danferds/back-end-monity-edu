@@ -4,6 +4,7 @@ import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
 import com.pi2.monity_edu.exception.CancelarMonitoriaException;
 import com.pi2.monity_edu.exception.HorarioInvalidoException;
+import com.pi2.monity_edu.exception.MarcarMonitoriaComoRealizadaException;
 import com.pi2.monity_edu.exception.MonitorNaoCredenciadoException;
 import com.pi2.monity_edu.exception.MonitoriaNaoEditavelException;
 import com.pi2.monity_edu.exception.TipoArquivoNaoSuportadoException;
@@ -41,7 +42,8 @@ public class MonitoriaValidation {
     public void validarEdicaoMonitoria(MonitoriaUpdateDTO dto, Monitoria monitoria, UserDetailsImpl userDetails) {
         podeEditar(monitoria, userDetails);
 
-        LocalTime horarioInicio = (dto.getHorarioInicio() != null) ? dto.getHorarioInicio() : monitoria.getHorarioInicio();
+        LocalTime horarioInicio = (dto.getHorarioInicio() != null) ? dto.getHorarioInicio()
+                : monitoria.getHorarioInicio();
         LocalTime horarioFim = (dto.getHorarioFim() != null) ? dto.getHorarioFim() : monitoria.getHorarioFim();
         validarHorarios(horarioInicio, horarioFim);
 
@@ -96,6 +98,28 @@ public class MonitoriaValidation {
         if (monitoria.getStatus() == StatusMonitoria.REALIZADA) {
             log.warn("Tentativa de cancelar uma monitoria que já foi realizada. Monitoria ID: {}", monitoria.getId());
             throw new CancelarMonitoriaException("Não é possível cancelar uma monitoria que já foi realizada.");
+        }
+    }
+
+    public void podeMarcarComoRealizada(Monitoria monitoria, UserDetailsImpl userDetails) {
+        if (!Objects.equals(monitoria.getMonitor().getId(), userDetails.getUsuario().getId())) {
+            log.warn("Tentativa por usuário não autorizado. User ID: {}, Monitoria ID: {}",
+                    userDetails.getUsuario().getId(), monitoria.getId());
+            throw new AccessDeniedException(
+                    "Acesso negado. Você não tem permissão para marcar esta monitoria como realizada.");
+        }
+
+        if (monitoria.getStatus() == StatusMonitoria.CANCELADA) {
+            log.warn("Tentativa de marcar como realizada uma monitoria que já está cancelada. Monitoria ID: {}",
+                    monitoria.getId());
+            throw new MarcarMonitoriaComoRealizadaException("A monitoria já foi cancelada.");
+        }
+
+        if (monitoria.getStatus() == StatusMonitoria.REALIZADA) {
+            log.warn("Tentativa de marcar como realizada uma monitoria que já foi realizada. Monitoria ID: {}",
+                    monitoria.getId());
+            throw new MarcarMonitoriaComoRealizadaException(
+                    "Não é possível cancelar uma monitoria que já foi realizada.");
         }
     }
 

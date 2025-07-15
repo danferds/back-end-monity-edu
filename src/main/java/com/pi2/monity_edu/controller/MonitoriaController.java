@@ -54,6 +54,15 @@ public class MonitoriaController {
         return ResponseFactory.success("Monitoria cancelada com sucesso!");
     }
 
+    @PatchMapping("/{id}/realizada")
+    public ResponseEntity<ApiResponse<String>> marcarMonitoriaComoRealizada(@PathVariable UUID id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        monitoriaService.marcarMonitoriaComoRealizada(id, userDetails);
+
+        return ResponseFactory.success("Sucesso ao marcar monitoria como realizada!");
+    }
+
     @PatchMapping("/{id}/editar")
     public ResponseEntity<ApiResponse<MonitoriaResponseDTO>> atualizarMonitoria(
             @PathVariable UUID id,
