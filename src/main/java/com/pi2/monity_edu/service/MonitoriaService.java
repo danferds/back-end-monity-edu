@@ -84,6 +84,21 @@ public class MonitoriaService {
     }
 
     @Transactional
+    public Boolean marcarMonitoriaComoRealizada(UUID monitoriaId, UserDetailsImpl userDetails) {
+        log.info("Marcar monitoria como realizada com ID: {}", monitoriaId);
+
+        Monitoria monitoria = monitoriaFinder.buscarPorId(monitoriaId);
+        monitoriaValidation.podeMarcarComoRealizada(monitoria, userDetails);
+        monitoria.setStatus(StatusMonitoria.REALIZADA);
+
+        monitoriaRepository.save(monitoria);
+
+        log.info("Monitoria com ID: {} marcada como realizada com sucesso", monitoriaId);
+
+        return true;
+    }
+
+    @Transactional
     public MonitoriaResponseDTO atualizarMonitoria(UUID monitoriaId, MonitoriaUpdateDTO dto,
             UserDetailsImpl userDetails) {
         log.info("Iniciando processo de atualização para a monitoria de ID: {}", monitoriaId);
