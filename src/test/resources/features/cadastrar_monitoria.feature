@@ -2,93 +2,70 @@
 
 Funcionalidade: Cadastrar Monitoria
 
-  Como um MONITOR,
-  Desejo cadastrar uma monitoria informando o título, data, horário de início e fim, link da reunião (Google Meet), matéria, tópico e descrição,
-  Além de poder anexar materiais complementares,
-  Para que os alunos possam visualizar as informações da monitoria e se inscreverem.
+  Como um monitor credenciado,
+    eu quero cadastrar uma nova monitoria com todos os detalhes (título, data, horário de início e fim, link da reunião (Google Meet), matéria, tópico e descrição) e anexar materiais,
+    para que os alunos possam encontrá-la e se inscrever.
 
-  Contexto: Monitor logado e na página de cadastro de monitoria
-    Dado que o monitor "ana.beatriz@exemplo.com" está logado na plataforma
-    E o monitor está na página de "Cadastrar Monitoria"
+  Cenário: Cadastro de monitoria com sucesso incluindo materiais complementares
+    Dado que a monitora "Ana Paula" está autenticada e possui status "APROVADO"
+    Quando ela preenche os dados obrigatórios da monitoria:
+      | Título           | Introdução a Grafos                       |
+      | Data             | 2025-07-26                                |
+      | Horário Início   | 09:00                                     |
+      | Horário Fim      | 10:30                                     |
+      | Link da Reunião  | https://meet.google.com/grafos-aula      |
+      | Matéria          | Estruturas de Dados                      |
+      | Tópico           | Grafos não direcionados                  |
+      | Descrição        | Aula teórica com exemplos práticos       |
+    E anexa os seguintes arquivos:
+      | Nome do Arquivo      | Tipo | Tamanho (MB) |
+      | grafos_teoria.pdf    | PDF  | 4            |
+      | lista_exercicios.docx| DOCX | 1            |
+    Então o sistema deve validar os arquivos anexados
+    E cadastrar a monitoria com status "PENDENTE"
+    E associá-la ao monitor "Ana Paula"
 
-  Cenário: Cadastro de monitoria bem-sucedido com todos os campos obrigatórios e sem material complementar
-    Quando o monitor preenche o campo "Título" com "Entendendo os ecomssitemas brasileiros"
-    E o monitor preenche o campo "Data" com "10/06/2025"
-    E o monitor preenche o campo "Horário de Início" com "14:00"
-    E o monitor preenche o campo "Horário de Fim" com "16:00"
-    E o monitor preenche o campo "Link da Reunião" com "https://meet.google.com/abc-defg-hij"
-    E o monitor seleciona a "Matéria" como "Biologia"
-    E o monitor preenche o campo "Tópico" com "Ecossistemas"
-    E o monitor preenche o campo "Descrição" com "Sessão para tirar dúvidas e resolver exercícios Amazônia, o Cerrado, a Caatinga, a Mata Atlântica, o Pantanal e os Pampas."
-    E o monitor clica no botão "Cadastrar"
-    Então o monitor deve ver uma mensagem de sucesso "Monitoria cadastrada com sucesso!"
-    E a monitoria "Entendendo os ecomssitemas brasileiros" deve estar listada como disponível para os alunos visualizarem e se inscreverem.
+  Cenário: Cadastro de monitoria com sucesso sem material complementar
+    Dado que o monitor "Pedrosa" está autenticado e possui status "APROVADO"
+    Quando ele preenche os seguintes dados obrigatórios da monitoria:
+      | Título           | Estrutura de Repetição em Java            |
+      | Data             | 2025-07-25                                |
+      | Horário Início   | 14:00                                     |
+      | Horário Fim      | 15:30                                     |
+      | Link da Reunião  | https://meet.google.com/abc-defg-hij     |
+      | Matéria          | Lógica de Programação                    |
+      | Tópico           | Laços de Repetição                       |
+      | Descrição        | Revisão prática com exercícios guiados   |
+    Então o sistema deve cadastrar a monitoria com status "PENDENTE"
+    E associá-la ao monitor "Pedrosa"
 
-  Cenário: Cadastro de monitoria bem-sucedido com todos os campos obrigatórios e com material complementar
-    Quando o monitor preenche o campo "Título" com "Aprofundamento sobre o Cerrado brasileiro"
-    E o monitor preenche o campo "Data" com "12/06/2025"
-    E o monitor preenche o campo "Horário de Início" com "10:00"
-    E o monitor preenche o campo "Horário de Fim" com "11:30"
-    E o monitor preenche o campo "Link da Reunião" com "https://meet.google.com/klm-nopq-rst"
-    E o monitor seleciona a "Matéria" como "Biologia"
-    E o monitor preenche o campo "Tópico" com "Ecossistemas"
-    E o monitor preenche o campo "Descrição" com "Aprofunde seus conhecimentos sobre o Cerrado, um dos biomas brasileiros"
-    E o monitor anexa o arquivo "cerrado.pdf" no campo "Anexar arquivos"
-    E o monitor clica no botão "Cadastrar"
-    Então o monitor deve ver uma mensagem de sucesso "Monitoria cadastrada com sucesso!"
-    E a monitoria "Aprofundamento sobre o Cerrado brasileiro" deve estar listada com o material "cerrado.pdf" disponível
+  Cenário: Monitor ainda não aprovado tenta cadastrar monitoria
+    Dado que o monitor "Lucas Pereira" está autenticado e possui status "PENDENTE"
+    Quando ele tenta acessar a funcionalidade de cadastro de monitoria
+    Então o sistema deve bloquear o acesso
+    E deve informar que apenas monitores com status "APROVADO" podem cadastrar monitorias
 
-  Cenário: Tentativa de cadastro de monitoria sem preencher campos obrigatórios
-    Quando o monitor preenche o campo "Título" com "Monitoria de Cálculo I"
-    E o monitor preenche o campo "Data" com "15/06/2025"
-    # Horário de Início, Fim e Link da Reunião não preenchidos
-    E o monitor seleciona a "Matéria" como "Cálculo I"
-    E o monitor clica no botão "Cadastrar"
-    Então o monitor deve ver uma mensagem de erro indicando "Por favor, preencha todos os campos obrigatórios: Horário de Início, Horário de Fim, Link da Reunião, Tópico, Descrição."
-    E o monitor deve permanecer na página de "Cadastrar Monitoria"
+  Cenário: Monitor omite campo obrigatório ao cadastrar monitoria
+    Dado que a monitora "Fernanda" está autenticada e possui status "APROVADO"
+    Quando ela preenche os dados da monitoria, mas deixa o campo "Tópico" em branco
+    Então o sistema deve rejeitar o cadastro
+    E deve informar que todos os campos obrigatórios devem ser preenchidos
 
-  Cenário: Tentativa de cadastro de monitoria com horário de fim anterior ao horário de início
-    Quando o monitor preenche o campo "Título" com "Tira-dúvidas sobre a Grécia Antiga"
-    E o monitor preenche o campo "Data" com "17/06/2025"
-    E o monitor preenche o campo "Horário de Início" com "15:00"
-    E o monitor preenche o campo "Horário de Fim" com "14:00" # Horário inválido
-    E o monitor preenche o campo "Link da Reunião" com "https://meet.google.com/uvw-xyza-bcd"
-    E o monitor seleciona a "Matéria" como "História"
-    E o monitor preenche o campo "Tópico" com "História Antiga"
-    E o monitor preenche o campo "Descrição" com "Sessão aberta para discussão sobre o impacto da civilização graga."
-    E o monitor clica no botão "Cadastrar"
-    Então o monitor deve ver uma mensagem de erro "O horário de fim deve ser posterior ao horário de início."
-    E o monitor deve permanecer na página de "Cadastrar Monitoria"
+  Cenário: Monitor anexa arquivo em formato não permitido
+    Dado que o monitora "Mirela" está autenticada e possui status "APROVADO"
+    Quando ela preenche os dados da monitoria
+    E tenta anexar o arquivo "script_instalacao.sh" no formato SH
+    Então o sistema deve rejeitar o anexo
+    E informar que apenas arquivos nos formatos PDF, DOCX, PPTX, TXT, JPG e PNG são permitidos
 
-  Cenário: Tentativa de cadastro de monitoria com anexo de material complementar de tipo não suportado
-    Quando o monitor preenche o campo "Título" com "Monitoria de Estrutura de Dados"
-    E o monitor preenche o campo "Data" com "21/06/2025"
-    E o monitor preenche o campo "Horário de Início" com "13:00"
-    E o monitor preenche o campo "Horário de Fim" com "14:30"
-    E o monitor preenche o campo "Link da Reunião" com "https://meet.google.com/efg-hijk-lmn"
-    E o monitor seleciona a "Matéria" como "Estrutura de Dados"
-    E o monitor preenche o campo "Tópico" com "Pilhas e Filas"
-    E o monitor preenche o campo "Descrição" com "Implementação e exemplos práticos."
-    E o monitor anexa o arquivo "exercicios.exe" no campo "Materiais Complementares"
-    E o monitor clica no botão "Salvar Monitoria"
-    Então o monitor deve ver uma mensagem de erro "Tipo de arquivo não suportado para materiais complementares. Utilize PDF, DOCX, PPTX, TXT, JPG, PNG."
-    E o monitor deve permanecer na página de "Cadastrar Monitoria"
+  Cenário: Anexo excede limite máximo por arquivo
+    Dado que a monitora "Ana Paula" está autenticada e possui status "APROVADO"
+    Quando ela tenta anexar o arquivo "video_aula.mov" com 12 MB
+    Então o sistema deve rejeitar o anexo
+    E deve informar que cada arquivo deve ter no máximo 10 MB
 
-  Esquema do Cenário: Tentativa de cadastro de monitoria com formato de link de reunião inválido
-    Quando o monitor preenche o campo "Título" com "Matrizes"
-    E o monitor preenche o campo "Data" com "<data>"
-    E o monitor preenche o campo "Horário de Início" com "<horario_inicio>"
-    E o monitor preenche o campo "Horário de Fim" com "<horario_fim>"
-    E o monitor preenche o campo "Link da Reunião" com "<link_invalido>"
-    E o monitor seleciona a "Matéria" como "Matemática"
-    E o monitor preenche o campo "Tópico" com "Álgebra Linear"
-    E o monitor preenche o campo "Descrição" com "Resolução de problemas."
-    E o monitor clica no botão "Cadastrar"
-    Então o monitor deve ver uma mensagem de erro "O formato do link da reunião é inválido. Utilize um link válido do Google Meet."
-    E o monitor deve permanecer na página de "Cadastrar Monitoria"
-
-    Exemplos:
-      | data         | horario_inicio | horario_fim | link_invalido               |
-      | "18/06/2025" | "09:00"        | "10:00"     | "htt://meet.google.com/123" |
-      | "19/06/2025" | "11:00"        | "12:00"     | "www.google.com"            |
-      | "20/06/2025" | "16:00"        | "17:00"     | "apenas_um_texto"           |
+  Cenário: Conjunto de arquivos excede tamanho máximo permitido
+    Dado que o monitor "Pedrosa" está autenticado e possui status "APROVADO"
+    Quando ele tenta anexar três arquivos totalizando 55 MB
+    Então o sistema deve rejeitar o conjunto de anexos
+    E informar que o limite total de materiais por monitoria é de 50 MB
