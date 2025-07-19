@@ -4,9 +4,11 @@ import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaFilterDTO;
 import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
 import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
+import com.pi2.monity_edu.finder.AlunoFinder;
 import com.pi2.monity_edu.finder.FinderMonitoria;
 import com.pi2.monity_edu.finder.MonitorFinder;
 import com.pi2.monity_edu.mapper.MonitoriaMapper;
+import com.pi2.monity_edu.model.Aluno;
 import com.pi2.monity_edu.model.Monitor;
 import com.pi2.monity_edu.model.Monitoria;
 import com.pi2.monity_edu.model.StatusMonitoria;
@@ -34,6 +36,7 @@ public class MonitoriaService {
 
     private final MonitoriaRepository monitoriaRepository;
     private final MonitorFinder monitorFinder;
+    private final AlunoFinder alunoFinder;
     private final MonitoriaMapper monitoriaMapper;
     private final MonitoriaValidation monitoriaValidation;
     private final FinderMonitoria monitoriaFinder;
@@ -128,5 +131,39 @@ public class MonitoriaService {
         return monitorias.stream()
                 .map(monitoriaMapper::toMonitoriaResponseDTO)
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void inscreverAlunoNaMonitoria(UUID monitoriaId, UserDetailsImpl userDetails) {
+
+        log.info("Iniciando processo de inscrição na monitoria ID: {} para o aluno ID: {}", monitoriaId,
+                userDetails.getUsuario().getId());
+
+        Monitoria monitoria = monitoriaFinder.buscarPorId(monitoriaId);
+        Aluno aluno = alunoFinder.buscarPorId(userDetails.getUsuario().getId());
+
+        monitoriaValidation.validarInscricao(monitoria, aluno);
+
+        monitoria.getAlunosInscritos().add(aluno);
+        monitoriaRepository.save(monitoria);
+
+        log.info("Aluno ID: {} inscrito com sucesso na monitoria ID: {}", aluno.getId(), monitoria.getId());
+    }
+
+    @Transactional
+    public void cancelarInscricao(UUID monitoriaId, UserDetailsImpl userDetails) {
+
+        log.info("Iniciando processo de cancelamento de inscrição na monitoria ID: {} para o aluno ID: {}", monitoriaId,
+                userDetails.getUsuario().getId());
+
+        Monitoria monitoria = monitoriaFinder.buscarPorId(monitoriaId);
+        Aluno aluno = alunoFinder.buscarPorId(userDetails.getUsuario().getId());
+
+        monitoriaValidation.validarCancelamentoInscricao(monitoria, aluno);
+
+        monitoria.getAlunosInscritos().remove(aluno);
+        monitoriaRepository.save(monitoria);
+
+        log.info("Inscrição do aluno ID: {} na monitoria ID: {} cancelada com sucesso", aluno.getId(), monitoria.getId());
     }
 }

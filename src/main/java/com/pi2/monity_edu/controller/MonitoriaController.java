@@ -83,4 +83,18 @@ public class MonitoriaController {
 
         return ResponseFactory.success(monitorias);
     }
+
+    @PostMapping("/{id}/inscrever")
+    public ResponseEntity<ApiResponse<String>> inscreverAluno(@PathVariable UUID id,
+                                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        monitoriaService.inscreverAlunoNaMonitoria(id, userDetails);
+        return ResponseFactory.success("Inscrição realizada com sucesso!");
+    }
+
+    @DeleteMapping("/{id}/cancelar-inscricao")
+    public ResponseEntity<ApiResponse<String>> cancelarInscricao(@PathVariable UUID id,
+                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        monitoriaService.cancelarInscricao(id, userDetails);
+        return ResponseFactory.success("Inscrição cancelada com sucesso!");
+    }
 }

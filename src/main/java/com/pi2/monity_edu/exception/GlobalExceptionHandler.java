@@ -113,4 +113,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleMonitoriaNaoEditavel(MonitoriaNaoEditavelException ex) {
         return ResponseFactory.error(HttpStatus.CONFLICT, ex.getMessage());
     }
+
+    @ExceptionHandler(InscricaoMonitoriaException.class)
+    public ResponseEntity<ApiResponse<Object>> handleInscricaoMonitoriaException(InscricaoMonitoriaException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
 }

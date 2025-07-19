@@ -2,16 +2,8 @@ package com.pi2.monity_edu.validation;
 
 import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
 import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
-import com.pi2.monity_edu.exception.CancelarMonitoriaException;
-import com.pi2.monity_edu.exception.HorarioInvalidoException;
-import com.pi2.monity_edu.exception.MarcarMonitoriaComoRealizadaException;
-import com.pi2.monity_edu.exception.MonitorNaoCredenciadoException;
-import com.pi2.monity_edu.exception.MonitoriaNaoEditavelException;
-import com.pi2.monity_edu.exception.TipoArquivoNaoSuportadoException;
-import com.pi2.monity_edu.model.Monitor;
-import com.pi2.monity_edu.model.Monitoria;
-import com.pi2.monity_edu.model.StatusMonitor;
-import com.pi2.monity_edu.model.StatusMonitoria;
+import com.pi2.monity_edu.exception.*;
+import com.pi2.monity_edu.model.*;
 import com.pi2.monity_edu.security.UserDetailsImpl;
 
 import lombok.extern.slf4j.Slf4j;
@@ -138,6 +130,35 @@ public class MonitoriaValidation {
         if (monitoria.getStatus() == StatusMonitoria.REALIZADA) {
             log.warn("Tentativa de cancelar uma monitoria que já foi realizada. Monitoria ID: {}", monitoria.getId());
             throw new MonitoriaNaoEditavelException("Não é possível editar uma monitoria que já foi realizada.");
+        }
+    }
+
+    public void validarInscricao(Monitoria monitoria, Aluno aluno) {
+        if (monitoria.getStatus() != StatusMonitoria.PENDENTE) {
+            log.warn("Tentativa de inscrição na monitoria ID {} com status {}", monitoria.getId(), monitoria.getStatus());
+            throw new InscricaoMonitoriaException("Não é possível se inscrever em uma monitoria que não está pendente.");
+        }
+
+        if (monitoria.getAlunosInscritos().contains(aluno)) {
+            log.warn("Aluno ID {} já está inscrito na monitoria ID {}", aluno.getId(), monitoria.getId());
+            throw new InscricaoMonitoriaException("Você já está inscrito nesta monitoria.");
+        }
+
+        if (monitoria.getAlunosInscritos().size() >= 50) {
+            log.warn("Monitoria ID {} atingiu o número máximo de inscritos.", monitoria.getId());
+            throw new InscricaoMonitoriaException("Não há mais vagas disponíveis para está monitoria.");
+        }
+    }
+
+    public void validarCancelamentoInscricao(Monitoria monitoria, Aluno aluno) {
+        if (monitoria.getStatus() != StatusMonitoria.PENDENTE) {
+            log.warn("Tentativa de cancelar inscrição em monitoria com status {}", monitoria.getStatus());
+            throw new InscricaoMonitoriaException("Não é possível cancelar a inscrição de uma monitoria que não está pendente.");
+        }
+
+        if (!monitoria.getAlunosInscritos().contains(aluno)) {
+            log.warn("Tentativa de cancelamento de inscrição do aluno ID {} que não está inscrito na monitoria ID {}", aluno.getId(), monitoria.getId());
+            throw new InscricaoMonitoriaException("Você não está inscrito nesta monitoria para cancelar a inscrição.");
         }
     }
 }
