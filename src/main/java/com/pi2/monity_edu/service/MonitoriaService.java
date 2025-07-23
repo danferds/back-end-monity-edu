@@ -42,6 +42,7 @@ public class MonitoriaService {
     private final FinderMonitoria monitoriaFinder;
     private final MonitoriaMaterialService monitoriaMaterialService;
     private final MonitoriaSpecification monitoriaSpecification;
+    private final MonitoriaViewService monitoriaViewService;
 
     @Transactional
     public MonitoriaResponseDTO cadastrarMonitoria(MonitoriaCadastroDTO dto, UUID monitorId) {
@@ -63,12 +64,9 @@ public class MonitoriaService {
     }
 
     @Transactional
-    public MonitoriaResponseDTO getMonitoriaById(UUID monitoriaId) {
-        log.info("Buscando monitoria com ID: {}", monitoriaId);
-
-        Monitoria monitoria = monitoriaFinder.buscarPorId(monitoriaId);
-
-        return monitoriaMapper.toMonitoriaResponseDTO(monitoria);
+    public Object getMonitoriaById(UUID monitoriaId, UserDetailsImpl userDetails) {
+        log.info("Delegando a busca da visão da monitoria com ID: {}", monitoriaId);
+        return monitoriaViewService.getMonitoriaViewById(monitoriaId, userDetails);
     }
 
     @Transactional

@@ -161,4 +161,11 @@ public class MonitoriaValidation {
             throw new InscricaoMonitoriaException("Você não está inscrito nesta monitoria para cancelar a inscrição.");
         }
     }
+
+    public void validarVisualizacaoAluno(Monitoria monitoria) {
+        if (monitoria.getStatus() == StatusMonitoria.CANCELADA) {
+            log.warn("Tentativa de visualização de monitoria cancelada. Monitoria ID: {}", monitoria.getId());
+            throw new VisualizacaoMonitoriaException("Esta monitoria foi cancelada e não pode ser visualizada.");
+        }
+    }
 }

@@ -1,9 +1,6 @@
 package com.pi2.monity_edu.mapper;
 
-import com.pi2.monity_edu.dto.MaterialComplementarResponseDTO;
-import com.pi2.monity_edu.dto.MonitoriaCadastroDTO;
-import com.pi2.monity_edu.dto.MonitoriaResponseDTO;
-import com.pi2.monity_edu.dto.MonitoriaUpdateDTO;
+import com.pi2.monity_edu.dto.*;
 import com.pi2.monity_edu.model.MaterialComplementar;
 import com.pi2.monity_edu.model.Monitoria;
 
@@ -40,4 +37,10 @@ public interface MonitoriaMapper {
     @Mapping(target = "alunosInscritos", ignore = true)
     @Mapping(target = "materiais", ignore = true)
     void updateMonitoriaFromDto(MonitoriaUpdateDTO dto, @MappingTarget Monitoria monitoria);
+
+    @Mapping(source = "monitor.nome", target = "nomeMonitor")
+    @Mapping(target = "avaliacaoMediaMonitor", constant = "0.0")
+    @Mapping(source = "materiais", target = "materiais")
+    AlunoMonitoriaResponseDTO toAlunoMonitoriaResponseDTO(Monitoria monitoria);
+
 }
