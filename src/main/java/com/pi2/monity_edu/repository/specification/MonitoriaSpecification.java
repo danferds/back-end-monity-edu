@@ -2,10 +2,12 @@ package com.pi2.monity_edu.repository.specification;
 
 import com.pi2.monity_edu.dto.MonitoriaFilterDTO;
 import com.pi2.monity_edu.model.Monitoria;
+
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.criteria.Predicate;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -14,10 +16,12 @@ import java.util.UUID;
 public class MonitoriaSpecification {
 
     /**
-     * Cria uma Specification para filtrar as monitorias de um monitor específico.
-     * @param filtro DTO com os filtros (status, data, tópico).
-     * @param monitorId O ID do monitor.
-     * @return Uma Specification para ser usada com JpaSpecificationExecutor.
+     * Cria uma especificação para consultar monitorias vinculadas a um monitor,
+     * aplicando filtros opcionais por status, data e tópico.
+     *
+     * @param filtro Filtros opcionais da consulta.
+     * @param monitorId ID do monitor logado.
+     * @return Especificação JPA com os critérios aplicados.
      */
     public Specification<Monitoria> getMonitorias(MonitoriaFilterDTO filtro, UUID monitorId) {
         return (root, query, criteriaBuilder) -> {

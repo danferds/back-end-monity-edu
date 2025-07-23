@@ -1,22 +1,35 @@
 package com.pi2.monity_edu.service;
 
 import com.pi2.monity_edu.dto.AlunoCadastroDTO;
+import com.pi2.monity_edu.dto.AlunoMonitoriaFilterDTO;
+import com.pi2.monity_edu.dto.AlunoMonitoriaResponseDTO;
 import com.pi2.monity_edu.dto.AlunoResponseDTO;
 import com.pi2.monity_edu.dto.AlunoUpdateDTO;
 import com.pi2.monity_edu.factory.UsuarioFactory;
 import com.pi2.monity_edu.finder.AlunoFinder;
 import com.pi2.monity_edu.mapper.AlunoMapper;
+import com.pi2.monity_edu.mapper.MonitoriaMapper;
 import com.pi2.monity_edu.model.Aluno;
+import com.pi2.monity_edu.model.Monitoria;
 import com.pi2.monity_edu.model.Usuario;
 import com.pi2.monity_edu.repository.AlunoRepository;
+import com.pi2.monity_edu.repository.MonitoriaRepository;
+import com.pi2.monity_edu.repository.specification.AlunoMonitoriaSpecification;
+import com.pi2.monity_edu.security.UserDetailsImpl;
 import com.pi2.monity_edu.validation.CadastroValidation;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +42,9 @@ public class AlunoService {
     private final CadastroValidation cadastroValidation;
     private final UsuarioFactory usuarioFactory;
     private final AlunoFinder alunoFinder;
+    private final MonitoriaMapper monitoriaMapper;
+    private final AlunoMonitoriaSpecification alunoMonitoriaSpecification;
+    private final MonitoriaRepository monitoriaRepository;
 
     @Transactional
     public AlunoResponseDTO cadastrarNovoAluno(AlunoCadastroDTO dto) {
@@ -55,8 +71,6 @@ public class AlunoService {
 
         Aluno aluno = alunoFinder.buscarPorId(id);
 
-        //cadastroValidation.verificarSeEmailExiste(dto.getEmail());
-
         cadastroValidation.validarAtualizacaoEmail(dto.getEmail(), aluno.getEmail(), aluno.getId());
 
         alunoMapper.updateAlunoFromDto(dto, aluno);
@@ -76,6 +90,21 @@ public class AlunoService {
         alunoRepository.deleteById(id);
 
         log.info("Aluno de ID: {} excluído com sucesso.", id);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AlunoMonitoriaResponseDTO> consultarMinhasInscricoes(UserDetailsImpl userDetails, AlunoMonitoriaFilterDTO filter) {
+
+        UUID alunoId = userDetails.getUsuario().getId();
+        log.info("Buscando inscrições para o aluno ID: {} com filtros: {}", alunoId, filter);
+
+        Specification<Monitoria> spec = alunoMonitoriaSpecification.getInscricoes(alunoId, filter);
+
+        List<Monitoria> monitorias = monitoriaRepository.findAll(spec, Sort.by("data", "horarioInicio"));
+
+        return monitorias.stream()
+                .map(monitoriaMapper::toAlunoMonitoriaResponseDTO)
+                .collect(Collectors.toList());
     }
 
     private void processarAtualizacaoSenha(AlunoUpdateDTO dto, Aluno aluno) {

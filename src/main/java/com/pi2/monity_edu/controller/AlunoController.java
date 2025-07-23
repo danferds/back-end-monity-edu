@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -50,5 +52,13 @@ public class AlunoController {
         authorizationService.checarDonoDoPerfil(userDetails, id);
 
         alunoService.excluirAluno(id);
+    }
+
+    @GetMapping("/minhas-inscricoes")
+    public ResponseEntity<ApiResponse<List<AlunoMonitoriaResponseDTO>>> consultarMinhasInscricoes(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @ModelAttribute AlunoMonitoriaFilterDTO filter) {
+        List<AlunoMonitoriaResponseDTO> inscricoes = alunoService.consultarMinhasInscricoes(userDetails, filter);
+        return ResponseFactory.success(inscricoes);
     }
 }

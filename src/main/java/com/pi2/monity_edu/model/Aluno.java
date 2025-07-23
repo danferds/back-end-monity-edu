@@ -2,6 +2,9 @@ package com.pi2.monity_edu.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -31,4 +34,7 @@ public class Aluno implements Usuario {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private SerieEscolar serieEscolar;
+
+    @ManyToMany(mappedBy = "alunosInscritos")
+    private List<Monitoria> monitoriasInscritas = new ArrayList<>();
 }
