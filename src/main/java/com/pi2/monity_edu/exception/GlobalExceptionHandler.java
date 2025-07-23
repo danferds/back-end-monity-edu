@@ -123,4 +123,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleVisualizacaoMonitoriaException(VisualizacaoMonitoriaException ex) {
         return ResponseFactory.error(HttpStatus.FORBIDDEN, ex.getMessage());
     }
+
+    @ExceptionHandler(AvaliacaoException.class)
+    public ResponseEntity<ApiResponse<Object>> handleAvaliacaoException(AvaliacaoException ex) {
+        return ResponseFactory.error(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
 }

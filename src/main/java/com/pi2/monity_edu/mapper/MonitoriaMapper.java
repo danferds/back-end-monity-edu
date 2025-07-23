@@ -38,9 +38,8 @@ public interface MonitoriaMapper {
     @Mapping(target = "materiais", ignore = true)
     void updateMonitoriaFromDto(MonitoriaUpdateDTO dto, @MappingTarget Monitoria monitoria);
 
-    @Mapping(source = "monitor.nome", target = "nomeMonitor")
-    @Mapping(target = "avaliacaoMediaMonitor", constant = "0.0")
-    @Mapping(source = "materiais", target = "materiais")
-    AlunoMonitoriaResponseDTO toAlunoMonitoriaResponseDTO(Monitoria monitoria);
-
+    @Mapping(source = "monitoria.monitor.nome", target = "nomeMonitor")
+    @Mapping(source = "media", target = "avaliacaoMediaMonitor")
+    @Mapping(source = "monitoria.materiais", target = "materiais")
+    AlunoMonitoriaResponseDTO toAlunoMonitoriaResponseDTO(Monitoria monitoria, Double media);
 }

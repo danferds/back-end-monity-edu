@@ -22,15 +22,20 @@ public class MonitoriaViewService {
     private final FinderMonitoria monitoriaFinder;
     private final MonitoriaValidation monitoriaValidation;
     private final MonitoriaMapper monitoriaMapper;
+    private final AvaliacaoService avaliacaoService;
 
     @Transactional(readOnly = true)
     public Object getMonitoriaViewById(UUID monitoriaId, UserDetailsImpl userDetails) {
         log.info("Determinando a visão correta para a monitoria ID: {}", monitoriaId);
+
         Monitoria monitoria = monitoriaFinder.buscarPorId(monitoriaId);
 
         if (userDetails.getUsuario() instanceof Aluno) {
             monitoriaValidation.validarVisualizacaoAluno(monitoria);
-            return monitoriaMapper.toAlunoMonitoriaResponseDTO(monitoria);
+
+            Double media = avaliacaoService.getMediaAvaliacoesMonitor(monitoria.getMonitor().getId());
+
+            return monitoriaMapper.toAlunoMonitoriaResponseDTO(monitoria, media);
         }
 
         return monitoriaMapper.toMonitoriaResponseDTO(monitoria);

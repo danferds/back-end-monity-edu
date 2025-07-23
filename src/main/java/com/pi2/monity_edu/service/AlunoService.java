@@ -45,6 +45,7 @@ public class AlunoService {
     private final MonitoriaMapper monitoriaMapper;
     private final AlunoMonitoriaSpecification alunoMonitoriaSpecification;
     private final MonitoriaRepository monitoriaRepository;
+    private final AvaliacaoService avaliacaoService;
 
     @Transactional
     public AlunoResponseDTO cadastrarNovoAluno(AlunoCadastroDTO dto) {
@@ -103,9 +104,12 @@ public class AlunoService {
         List<Monitoria> monitorias = monitoriaRepository.findAll(spec, Sort.by("data", "horarioInicio"));
 
         return monitorias.stream()
-                .map(monitoriaMapper::toAlunoMonitoriaResponseDTO)
-                .collect(Collectors.toList());
-    }
+                .map(monitoria -> {
+        Double media = avaliacaoService.getMediaAvaliacoesMonitor(monitoria.getMonitor().getId());
+        return monitoriaMapper.toAlunoMonitoriaResponseDTO(monitoria, media);
+    })
+            .collect(Collectors.toList());
+}
 
     private void processarAtualizacaoSenha(AlunoUpdateDTO dto, Aluno aluno) {
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
