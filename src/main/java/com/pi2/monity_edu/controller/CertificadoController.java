@@ -3,7 +3,6 @@ package com.pi2.monity_edu.controller;
 import com.pi2.monity_edu.dto.GerarCertificadoDTO;
 import com.pi2.monity_edu.dto.CertificadoFilterDTO;
 import com.pi2.monity_edu.dto.CertificadoResponseDTO;
-import com.pi2.monity_edu.dto.DownloadCertificadoResponseDTO;
 import com.pi2.monity_edu.factory.ResponseFactory;
 import com.pi2.monity_edu.model.Certificado;
 import com.pi2.monity_edu.response.ApiResponse;
