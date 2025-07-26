@@ -20,6 +20,7 @@ public class LoginResponseDTO {
     private String userType; // "ALUNO" ou "MONITOR"
     private String expirationTime; // data de expiração do token
     private String statusMonitor;
+    private String serieEscolar;
 
     public LoginResponseDTO(String token) {
         this.token = token;

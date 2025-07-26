@@ -44,6 +44,7 @@ public class AuthenticationController {
 
         String userType = (usuarioAutenticado instanceof Aluno) ? "ALUNO" : "MONITOR";
         String statusMonitor = (usuarioAutenticado instanceof Monitor monitor) ? monitor.getStatus().name() : null;
+        String serieEscolar = (usuarioAutenticado instanceof Aluno aluno) ? aluno.getSerieEscolar().name() : null;
 
         LoginResponseDTO responsePayload = new LoginResponseDTO(
                 token,
@@ -52,7 +53,8 @@ public class AuthenticationController {
                 usuarioAutenticado.getEmail(),
                 userType,
                 tokenService.getExpirationDate(token),
-                statusMonitor );
+                statusMonitor,
+                serieEscolar);
 
         return ResponseFactory.success(responsePayload);
     }
