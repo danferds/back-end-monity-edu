@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class AlunoUpdateDTO {
 
+    private String nome;
+
     @Email(message = "Formato de e-mail inválido.")
     private String email;
 

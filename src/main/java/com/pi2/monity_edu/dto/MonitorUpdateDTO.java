@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class MonitorUpdateDTO {
 
+    private String nome;
+
     @Email(message = "Formato de e-mail inválido.")
     private String email;
 

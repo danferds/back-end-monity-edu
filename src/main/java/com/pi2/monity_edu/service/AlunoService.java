@@ -94,7 +94,8 @@ public class AlunoService {
     }
 
     @Transactional(readOnly = true)
-    public List<AlunoMonitoriaResponseDTO> consultarMinhasInscricoes(UserDetailsImpl userDetails, AlunoMonitoriaFilterDTO filter) {
+    public List<AlunoMonitoriaResponseDTO> consultarMinhasInscricoes(UserDetailsImpl userDetails,
+            AlunoMonitoriaFilterDTO filter) {
 
         UUID alunoId = userDetails.getUsuario().getId();
         log.info("Buscando inscrições para o aluno ID: {} com filtros: {}", alunoId, filter);
@@ -105,11 +106,11 @@ public class AlunoService {
 
         return monitorias.stream()
                 .map(monitoria -> {
-        Double media = avaliacaoService.getMediaAvaliacoesMonitor(monitoria.getMonitor().getId());
-        return monitoriaMapper.toAlunoMonitoriaResponseDTO(monitoria, media);
-    })
-            .collect(Collectors.toList());
-}
+                    Double media = avaliacaoService.getMediaAvaliacoesMonitor(monitoria.getMonitor().getId());
+                    return monitoriaMapper.toAlunoMonitoriaResponseDTO(monitoria, media);
+                })
+                .collect(Collectors.toList());
+    }
 
     private void processarAtualizacaoSenha(AlunoUpdateDTO dto, Aluno aluno) {
         if (dto.getSenha() != null && !dto.getSenha().isBlank()) {
