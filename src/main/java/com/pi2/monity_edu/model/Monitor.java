@@ -37,4 +37,8 @@ public class Monitor implements Usuario {
 
     @OneToMany(mappedBy = "monitor", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Credenciamento> credenciamentos = new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "monitor", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Monitoria> monitorias = new ArrayList<>();
 }

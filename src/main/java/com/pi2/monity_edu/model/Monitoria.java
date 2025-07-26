@@ -63,4 +63,7 @@ public class Monitoria {
 
     @OneToMany(mappedBy = "monitoria", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MaterialComplementar> materiais = new ArrayList<>();
+
+    @OneToMany(mappedBy = "monitoria", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Avaliacao> avaliacoes = new ArrayList<>();
 }
